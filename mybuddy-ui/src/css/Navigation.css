@@ -1,0 +1,69 @@
+/* Navigation bar styles */
+.nav-bar {
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Equivalent to shadow-sm */
+  }
+  
+  /* Navigation content wrapper */
+  .nav-content {
+    max-width: 1280px; /* Equivalent to max-w-7xl */
+    margin: 0 auto; /* Centering the content */
+    padding: 16px; /* Equivalent to px-4 */
+  }
+  
+  /* Responsive padding for small and large screens */
+  @media (min-width: 640px) { /* sm:px-6 equivalent */
+    .nav-content {
+      padding: 24px; /* Equivalent to sm:px-6 */
+    }
+  }
+  
+  @media (min-width: 1024px) { /* lg:px-8 equivalent */
+    .nav-content {
+      padding: 32px; /* Equivalent to lg:px-8 */
+    }
+  }
+  
+  /* Navigation header styles */
+  .nav-header {
+    display: flex;
+    justify-content: space-between; /* Equivalent to justify-between */
+    align-items: center; /* Equivalent to items-center */
+    height: 64px; /* Equivalent to h-16 */
+  }
+  
+  /* Brand logo styles */
+  .brand-logo {
+    display: flex;
+    align-items: center; /* Equivalent to items-center */
+  }
+  
+  .wallet-icon {
+    height: 32px; /* Equivalent to h-8 */
+    width: 32px; /* Equivalent to w-8 */
+    color: #3B82F6; /* Equivalent to text-blue-500 */
+  }
+  
+  .brand-name {
+    margin-left: 8px; /* Equivalent to ml-2 */
+    font-size: 1.5rem; /* Equivalent to text-xl */
+    font-weight: bold; /* Equivalent to font-bold */
+    color: #1F2937; /* Equivalent to text-gray-900 */
+  }
+  
+  /* Navigation actions styles */
+  .nav-actions {
+    display: flex;
+    align-items: center; /* Equivalent to items-center */
+    gap: 16px; /* Equivalent to space-x-4 */
+  }
+  
+  .login-button {
+    color: #6B7280; /* Equivalent to text-gray-700 */
+    font-weight: 500; /* Equivalent to font-medium */
+  }
+  
+  .login-button:hover {
+    color: #1F2937; /* Equivalent to hover:text-gray-900 */
+  }
+  

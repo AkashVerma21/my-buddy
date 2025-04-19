@@ -1,0 +1,157 @@
+/* Modal overlay styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Equivalent to bg-black bg-opacity-50 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px; /* Equivalent to p-4 */
+    z-index: 50; /* Equivalent to z-50 */
+  }
+  
+  /* Modal content styles */
+  .modal-content {
+    background-color: white;
+    border-radius: 8px; /* Equivalent to rounded-lg */
+    padding: 24px; /* Equivalent to p-6 */
+    width: 100%;
+    max-width: 480px; /* Equivalent to max-w-md */
+    position: relative;
+  }
+  
+  /* Close button styles */
+  .close-button {
+    position: absolute;
+    top: 16px; /* Equivalent to top-4 */
+    right: 16px; /* Equivalent to right-4 */
+    color: #6B7280; /* Equivalent to text-gray-500 */
+  }
+  
+  .close-button:hover {
+    color: #1F2937; /* Equivalent to hover:text-gray-700 */
+  }
+  
+  /* Modal title styles */
+  .modal-title {
+    font-size: 1.5rem; /* Equivalent to text-2xl */
+    font-weight: bold; /* Equivalent to font-bold */
+    margin-bottom: 24px; /* Equivalent to mb-6 */
+  }
+  
+  /* Error message styles */
+  .error-message {
+    background-color: #FEE2E2; /* Equivalent to bg-red-100 */
+    border: 1px solid #FCA5A5; /* Equivalent to border border-red-400 */
+    color: #C53030; /* Equivalent to text-red-700 */
+    padding: 8px 16px; /* Equivalent to px-4 py-3 */
+    border-radius: 4px; /* Equivalent to rounded */
+    margin-bottom: 16px; /* Equivalent to mb-4 */
+  }
+  
+  /* Google button styles */
+  .google-button {
+    width: 100%; /* Equivalent to w-full */
+    background-color: white;
+    border: 1px solid #CBD5E0; /* Equivalent to border border-gray-300 */
+    color: #6B7280; /* Equivalent to text-gray-700 */
+    padding: 8px; /* Equivalent to py-2 */
+    border-radius: 4px; /* Equivalent to rounded */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .google-button:hover {
+    background-color: #F7FAFC; /* Equivalent to hover:bg-gray-50 */
+  }
+  
+  /* Google icon styles */
+  .google-icon {
+    width: 20px; /* Equivalent to w-5 */
+    height: 20px; /* Equivalent to h-5 */
+    margin-right: 8px; /* Equivalent to mr-2 */
+  }
+  
+  /* Divider styles */
+  .divider {
+    position: relative;
+    margin-bottom: 24px; /* Equivalent to mb-6 */
+  }
+  
+  .divider-line {
+    width: 100%;
+    border-top: 1px solid #CBD5E0; /* Equivalent to border-t border-gray-300 */
+  }
+  
+  .divider-text {
+    position: absolute;
+    top: -8px; /* Centering the text vertically */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: white;
+    padding: 0 8px; /* Equivalent to px-2 */
+    color: #6B7280; /* Equivalent to text-gray-500 */
+  }
+  
+  /* Form group styles */
+  .form-group {
+    margin-bottom: 16px; /* Equivalent to mb-4 */
+  }
+  
+  .form-label {
+    display: block;
+    color: #6B7280; /* Equivalent to text-gray-700 */
+    font-size: 0.875rem; /* Equivalent to text-sm */
+    font-weight: bold; /* Equivalent to font-bold */
+    margin-bottom: 8px; /* Equivalent to mb-2 */
+  }
+  
+  .form-input {
+    width: 100%; /* Equivalent to w-full */
+    padding: 8px; /* Equivalent to p-2 */
+    border: 1px solid #CBD5E0; /* Equivalent to border rounded */
+    border-radius: 4px; /* Equivalent to rounded */
+  }
+  
+  .form-input:focus {
+    outline: none;
+    border: 2px solid #3B82F6; /* Equivalent to focus:outline-none focus:ring-2 focus:ring-blue-500 */
+  }
+  
+  /* Submit button styles */
+  .submit-button {
+    width: 100%; /* Equivalent to w-full */
+    background-color: #3B82F6; /* Equivalent to bg-blue-500 */
+    color: white; /* Equivalent to text-white */
+    padding: 8px; /* Equivalent to py-2 */
+    border-radius: 4px; /* Equivalent to rounded */
+  }
+  
+  .submit-button:hover {
+    background-color: #2563EB; /* Equivalent to hover:bg-blue-600 */
+  }
+  
+  .submit-button:disabled {
+    opacity: 0.5; /* Equivalent to disabled:opacity-50 */
+    cursor: not-allowed; /* Equivalent to disabled:cursor-not-allowed */
+  }
+  
+  /* Signup link styles */
+  .signup-link {
+    text-align: center;
+    font-size: 0.875rem; /* Equivalent to text-sm */
+    color: #6B7280; /* Equivalent to text-gray-600 */
+  }
+  
+  .toggle-link {
+    color: #3B82F6; /* Equivalent to text-blue-500 */
+  }
+  
+  .toggle-link:hover {
+    color: #2563EB; /* Equivalent to hover:text-blue-700 */
+  }
+  
