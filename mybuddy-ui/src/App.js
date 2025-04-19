@@ -1,13 +1,14 @@
 import React,{useState} from "react";
-import { Dashboard } from "./components/Dashboard";
-import { Navigation } from "./components/Navigation";
-
+import ExpenseList from "./components/ExpenseTable";
+import AddExpense from "./components/AddExpense";
 
 function App() {
+  const [expenses, setExpenses] = useState([]);
   return (
-    <div>
-      <Navigation />
-      <Dashboard />
+    <div className="App">
+      <h1>Expense Tracker</h1>
+      <AddExpense expenses={expenses} setExpenses={setExpenses}/>
+      <ExpenseList expenses={expenses} setExpenses={setExpenses}/>
     </div>
   );
 }
