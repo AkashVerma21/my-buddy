@@ -1,0 +1,103 @@
+/* Container for the entire component */
+.expense-history-container {
+    background-color: white;
+    padding: 24px; /* Equivalent to p-6 */
+    border-radius: 8px; /* Equivalent to rounded-lg */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Equivalent to shadow-md */
+  }
+  
+  /* Header section with title and total expenses */
+  .header-section {
+    display: flex;
+    justify-content: space-between; /* Equivalent to justify-between */
+    align-items: center; /* Equivalent to items-center */
+    margin-bottom: 24px; /* Equivalent to mb-6 */
+  }
+  
+  /* Expense History title */
+  .history-title {
+    font-size: 1.25rem; /* Equivalent to text-xl */
+    font-weight: bold; /* Equivalent to font-bold */
+  }
+  
+  /* Total expenses display */
+  .total-expenses {
+    font-size: 1.125rem; /* Equivalent to text-lg */
+    font-weight: 600; /* Equivalent to font-semibold */
+    color: #2563EB; /* Equivalent to text-blue-600 */
+  }
+  
+  /* Table container to handle overflow */
+  .table-container {
+    overflow-x: auto; /* Equivalent to overflow-x-auto */
+  }
+  
+  /* Expense table styles */
+  .expense-table {
+    min-width: 100%; /* Equivalent to min-w-full */
+    border-collapse: collapse;
+  }
+  
+  /* Table header styles */
+  .table-header {
+    background-color: #F9FAFB; /* Equivalent to bg-gray-50 */
+  }
+  
+  /* Table header cells */
+  .header-cell {
+    padding: 12px 24px; /* Equivalent to px-6 py-3 */
+    text-align: left; /* Equivalent to text-left */
+    font-size: 0.75rem; /* Equivalent to text-xs */
+    font-weight: 500; /* Equivalent to font-medium */
+    color: #6B7280; /* Equivalent to text-gray-500 */
+    text-transform: uppercase; /* Equivalent to uppercase */
+    letter-spacing: 0.025em; /* Equivalent to tracking-wider */
+    border-bottom: 1px solid #E5E7EB; /* Equivalent to divide-gray-200 */
+  }
+  
+  /* Table body styles */
+  .table-body {
+    background-color: white; /* Equivalent to bg-white */
+  }
+  
+  /* Table data cells */
+  .data-cell {
+    padding: 16px 24px; /* Equivalent to px-6 py-4 */
+    white-space: nowrap; /* Equivalent to whitespace-nowrap */
+    border-bottom: 1px solid #E5E7EB; /* Equivalent to divide-gray-200 */
+  }
+  
+  /* Category badge styles */
+  .category-badge {
+    padding: 4px 8px; /* Equivalent to px-2 py-1 */
+    font-size: 0.75rem; /* Equivalent to text-xs */
+    font-weight: 600; /* Equivalent to font-semibold */
+    border-radius: 9999px; /* Equivalent to rounded-full */
+  }
+  
+  /* Category-specific badges */
+  .category-food {
+    background-color: #ECFDF5; /* bg-green-100 equivalent */
+    color: #065F46; /* text-green-800 equivalent */
+  }
+  
+  .category-transportation {
+    background-color: #EFF6FF; /* bg-blue-50 equivalent */
+    color: #1E3A8A; /* text-blue-800 equivalent */
+  }
+  
+  .category-utilities {
+    background-color: #FEF2F2; /* bg-red-50 equivalent */
+    color: #B91C1C; /* text-red-800 equivalent */
+  }
+  
+  .category-entertainment {
+    background-color: #FFFBEB; /* bg-yellow-50 equivalent */
+    color: #713F12; /* text-yellow-800 equivalent */
+  }
+  
+  .category-other {
+    background-color: #F5F3FF; /* bg-purple-50 equivalent */
+    color: #5B21B6; /* text-purple-800 equivalent */
+  }
+  
