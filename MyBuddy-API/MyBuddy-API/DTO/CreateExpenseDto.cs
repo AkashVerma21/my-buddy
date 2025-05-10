@@ -1,4 +1,4 @@
-﻿namespace MyBuddy_API.Models
+﻿namespace MyBuddy_API.DTO
 {
     public class CreateExpenseDto
     {

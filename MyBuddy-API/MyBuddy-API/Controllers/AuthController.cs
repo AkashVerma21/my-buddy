@@ -5,6 +5,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using MyBuddy_API.DTO;
+using Google.Apis.Auth;
 
 namespace MyBuddy_API.Controllers
 {
@@ -12,10 +14,10 @@ namespace MyBuddy_API.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly UserContext _context;
+        private readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
 
-        public AuthController(UserContext context, IConfiguration configuration)
+        public AuthController(ApplicationDbContext context, IConfiguration configuration)
         {
             _context = context;
             _configuration = configuration;
@@ -59,5 +61,55 @@ namespace MyBuddy_API.Controllers
 
             return Ok(new { Token = tokenString });
         }
+
+        [HttpPost("google-login")]
+        public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginRequest request)
+        {
+            GoogleJsonWebSignature.Payload payload;
+            try
+            {
+                payload = await GoogleJsonWebSignature.ValidateAsync(request.IdToken);
+            }
+            catch
+            {
+                return Unauthorized("Invalid Google token");
+            }
+
+            // (Optional) Save user to database if needed
+
+            // Generate your own JWT
+            var claims = new[]
+            {
+            new Claim(ClaimTypes.NameIdentifier, payload.Subject),
+            new Claim(ClaimTypes.Email, payload.Email),
+            new Claim(ClaimTypes.Name, payload.Name)
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.Name,ClaimTypes.Email)
+                }),
+                Expires = DateTime.UtcNow.AddDays(7),
+                Audience = _configuration["Jwt:Audience"], // Add the audience claim
+                Issuer = _configuration["Jwt:Issuer"],    // Add the issuer claim
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var tokenString = tokenHandler.WriteToken(token);
+
+            return Ok(new
+            {
+                token = new JwtSecurityTokenHandler().WriteToken(token)
+            });
+        }
+    }
+
+    public class GoogleLoginRequest
+    {
+        public string IdToken { get; set; }
     }
 }
