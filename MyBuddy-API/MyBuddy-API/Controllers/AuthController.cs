@@ -7,11 +7,12 @@ using System.Security.Claims;
 using System.Text;
 using MyBuddy_API.DTO;
 using Google.Apis.Auth;
-
+using User = MyBuddy_API.Models.User;
 namespace MyBuddy_API.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [ApiVersion("1.0")]
     public class AuthController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -42,22 +43,7 @@ namespace MyBuddy_API.Controllers
             var existingUser = _context.Users.FirstOrDefault(u => u.Username == user.Username && u.Password == user.Password);
             if (existingUser == null)
                 return Unauthorized(new { message = "Invalid credentials" });
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.Name, existingUser.Username)
-                }),
-                Expires = DateTime.UtcNow.AddDays(7),
-                Audience = _configuration["Jwt:Audience"], // Add the audience claim
-                Issuer = _configuration["Jwt:Issuer"],    // Add the issuer claim
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var tokenString = tokenHandler.WriteToken(token);
+            string tokenString = GenerateJwtToken(existingUser.Username);
 
             return Ok(new { Token = tokenString });
         }
@@ -75,23 +61,33 @@ namespace MyBuddy_API.Controllers
                 return Unauthorized("Invalid Google token");
             }
 
-            // (Optional) Save user to database if needed
-
-            // Generate your own JWT
-            var claims = new[]
+            // If new user to database if needed
+            var existingUser = _context.Users.FirstOrDefault(u => u.Username == payload.Email);
+            if (existingUser == null)
             {
-            new Claim(ClaimTypes.NameIdentifier, payload.Subject),
-            new Claim(ClaimTypes.Email, payload.Email),
-            new Claim(ClaimTypes.Name, payload.Name)
-            };
+                var newUser = new User
+                {
+                    Username = payload.Email,
+                    Password = Guid.NewGuid().ToString() // Generate a random password or handle as needed
+                };
+                _context.Users.Add(newUser);
+                await _context.SaveChangesAsync();
+            }
 
+            string tokenString = GenerateJwtToken(payload.Email);
+
+            return Ok(new { Token = tokenString });
+        }
+
+        private string GenerateJwtToken(string username)
+        {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name,ClaimTypes.Email)
+                    new Claim(ClaimTypes.Name, username)
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 Audience = _configuration["Jwt:Audience"], // Add the audience claim
@@ -100,11 +96,7 @@ namespace MyBuddy_API.Controllers
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);
-
-            return Ok(new
-            {
-                token = new JwtSecurityTokenHandler().WriteToken(token)
-            });
+            return tokenString;
         }
     }
 

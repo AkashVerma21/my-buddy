@@ -15,6 +15,11 @@ namespace MyBuddy_API.Data
                 .HasMany(u => u.Expenses)
                 .WithOne(e => e.User)
                 .HasForeignKey(e => e.UserId);
+
+            // Add a unique index for the Username property
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Username)
+                .IsUnique();
         }
     }
 }
