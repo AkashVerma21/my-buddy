@@ -1,152 +1,57 @@
-using Microsoft.EntityFrameworkCore;
-using MyBuddy_API.Data;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Mvc.Versioning;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using MyBuddy_API.Extensions;
+using MyBuddy_API.Data; // For ApplicationDbContext
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// --- Add services to the container ---
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    // Use the IApiVersionDescriptionProvider service to get API version info
-    var apiVersionDescriptionProvider = builder.Services.BuildServiceProvider().GetRequiredService<IApiVersionDescriptionProvider>();
-    foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
-    {
-        options.SwaggerDoc(description.GroupName, new OpenApiInfo
-        {
-            Title = $"My Awesome API {description.ApiVersion}",
-            Version = description.ApiVersion.ToString(),
-            Description = description.IsDeprecated ? "This API version has been deprecated." : ""
-        });
-    }
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        Scheme = "Bearer",
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\""
-    });
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            new string[] {}
-        }
-    });
-});
+// 1. Configure Persistence (Database)
+builder.Services.AddPersistence(builder.Configuration);
 
-//
-builder.Services.AddApiVersioning(options =>
-{
-    options.ReportApiVersions = true; // This will include the API version in the response headers
-    options.AssumeDefaultVersionWhenUnspecified = true; // This will assume the default version if not specified
-    options.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0); // Set the default API version
-    options.ApiVersionReader=new UrlSegmentApiVersionReader(); // This will read the API version from the URL segment
-});
+// 2. Configure Authentication
+builder.Services.AddJwtAuthentication(builder.Configuration);
 
-builder.Services.AddVersionedApiExplorer(options =>
-{
-    options.GroupNameFormat = "'v'VVV"; // This will format the version as v1, v2, etc.
-    options.SubstituteApiVersionInUrl = true; // This will substitute the API version in the URL
-});
+// 3. Configure API Versioning
+builder.Services.AddApiVersioningConfiguration();
 
+// 4. Configure Swagger
+builder.Services.AddSwaggerDocumentation();
+
+// 5. Configure CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAnyOrigin",
-        policy =>
-        {
-            policy.AllowAnyOrigin() // Replace with the origin you want to allow
-                 .AllowAnyMethod()
-                 .AllowAnyHeader();
-        });
-});
-
-
-var connectionString = Environment.GetEnvironmentVariable("DefaultConnection") ?? builder.Configuration.GetConnectionString("DefaultConnection");
-
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(connectionString));
-
-var jwtSettings = builder.Configuration.GetSection("Jwt");
-var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("Jwt__Key") ?? jwtSettings["Key"]);
-var issuer = Environment.GetEnvironmentVariable("Jwt__Issuer") ?? jwtSettings["Issuer"];
-var audience = Environment.GetEnvironmentVariable("Jwt__Audience") ?? jwtSettings["Audience"];
-
-
-// Ensure the key length is sufficient
-if (key.Length < 32)
-{
-    throw new ArgumentException("The JWT key must be at least 32 characters long.");
-}
-
-// Configure JWT authentication
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.RequireHttpsMetadata = false;
-    options.SaveToken = true;
-    options.TokenValidationParameters = new TokenValidationParameters
+    // WARNING: "AllowAnyOrigin" is insecure for production.
+    // Lock this down to specific origins.
+    options.AddPolicy("AllowAnyOrigin", policy =>
     {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(key),
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidIssuer = issuer,
-        ValidAudience = audience
-    };
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
 });
 
+// 6. Add standard ASP.NET Core services
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+
+// --- Build the application ---
 var app = builder.Build();
 
-// Apply any pending migrations and create the database if it does not exist
-using (var scope = app.Services.CreateScope())
-{
-    var applicationContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    applicationContext.Database.Migrate();
+// --- Configure the HTTP request pipeline ---
 
+// Use Swagger only in development environments for security
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwaggerDocumentation();
+
+    // Optional: Apply migrations automatically in development.
+    // Do NOT do this in production. Use a CI/CD pipeline for migrations.
+    app.ApplyMigrations();
 }
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        var apiVersionDescriptionProvider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
-        foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
-        {
-            options.SwaggerEndpoint(
-                $"/swagger/{description.GroupName}/swagger.json",
-                description.GroupName.ToUpperInvariant());
-        }
-    });
-}
+app.UseHttpsRedirection(); // Always a good practice
 
-
-// Use the permissive CORS policy
 app.UseCors("AllowAnyOrigin");
-
-//app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
