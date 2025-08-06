@@ -1,5 +1,4 @@
 using MyBuddy_API.Extensions;
-using MyBuddy_API.Data; // For ApplicationDbContext
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,7 +36,13 @@ builder.Services.AddEndpointsApiExplorer();
 // --- Build the application ---
 var app = builder.Build();
 
+
 // --- Configure the HTTP request pipeline ---
+
+// Use the custom exception handler middleware at the top of the pipeline
+app.UseCustomExceptionHandler();
+
+app.UseRequestLogging();
 
 // Use Swagger only in development environments for security
 if (app.Environment.IsDevelopment())
